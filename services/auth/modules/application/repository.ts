@@ -8,7 +8,9 @@ export class ApplicationRepository extends Effect.Service<ApplicationRepository>
 		effect: Effect.gen(function* () {
 			const db = yield* DatabaseService;
 
-			const createApplication = Effect.fn(function* (application: Application) {
+			const createApplication = Effect.fn("createApplication")(function* (
+				application: Application,
+			) {
 				const applicationDb = yield* applicationToDb(application);
 				yield* db.insertInto("applications").values(applicationDb);
 			});

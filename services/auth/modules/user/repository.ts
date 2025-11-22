@@ -9,8 +9,8 @@ export class UserRepository extends Effect.Service<UserRepository>()(
 		effect: Effect.gen(function* () {
 			const db = yield* DatabaseService;
 
-			const getUserByApplicationId = (applicationId: string) =>
-				Effect.gen(function* () {
+			const getUserByApplicationId = Effect.fn("getUserByApplicationId")(
+				function* (applicationId: string) {
 					{
 						const AppId =
 							yield* Schema.decodeUnknown(ApplicationIDSchema)(applicationId);
@@ -32,7 +32,8 @@ export class UserRepository extends Effect.Service<UserRepository>()(
 
 						return userResponse;
 					}
-				});
+				},
+			);
 
 			return { getUserByApplicationId };
 		}),
