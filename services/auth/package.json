@@ -1,0 +1,20 @@
+{
+	"name": "@fungsi/auth-service",
+	"version": "1.0.0",
+	"main": "index.ts",
+	"type": "module",
+	"scripts": {
+		"run": "bun --watch index.ts",
+		"lint": "oxlint . --max-warnings 0 --import-plugin",
+		"migrate": "bun migrator.ts",
+		"migrate:up": "bun migrator.ts up",
+		"migrate:down": "bun migrator.ts down",
+		"migrate:latest": "bun migrator.ts latest",
+		"migrate:reset": "bun migrator.ts reset",
+		"migrate:status": "bun migrator.ts status",
+		"seed": "bun seeder.ts"
+	},
+	"dependencies": {
+		"@effect/sql-kysely": "^0.42.0"
+	}
+}

@@ -1,0 +1,49 @@
+{
+	"name": "@fungsi/app",
+	"version": "1.0.0",
+	"packageManager": "bun@1.2.23",
+	"workspaces": [
+		"packages/*",
+		"services/*"
+	],
+	"scripts": {
+		"run": "turbo run run",
+		"dev": "turbo run run",
+		"lint": "turbo run lint",
+		"lint:oxc": "oxlint . --import-plugin",
+		"format": "biome format --write .",
+		"check": "biome check --write --error-on-warnings .",
+		"ci": "biome ci --error-on-warnings .",
+		"prepare": "husky",
+		"infra:up": "docker-compose up -d",
+		"infra:down": "docker-compose down",
+		"infra:clean": "docker-compose down -v",
+		"infra:logs": "docker-compose logs -f",
+		"infra:ps": "docker-compose ps",
+		"infra:db:sync": "docker exec -i bun-microservice-postgres psql -U postgres -d postgres < docker/postgres/init/01-create-databases.sql"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.7",
+		"@effect/language-service": "^0.56.0",
+		"@types/pg": "^8.15.6",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.6",
+		"oxlint": "^1.24.0",
+		"turbo": "^2.5.8"
+	},
+	"dependencies": {
+		"@effect/platform": "^0.93.0",
+		"@effect/platform-bun": "^0.81.1",
+		"@effect/sql": "^0.48.0",
+		"@effect/sql-kysely": "^0.44.0",
+		"@effect/sql-pg": "^0.49.3",
+		"@types/bun": "^1.3.1",
+		"effect": "^3.19.3",
+		"hono": "^4.10.3",
+		"kysely": "^0.28.8",
+		"pg": "^8.16.3",
+		"pino": "^10.1.0",
+		"type-fest": "^5.1.0",
+		"ulid": "^3.0.1"
+	}
+}

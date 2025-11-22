@@ -1,0 +1,11 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "@fungsi/typescript-config/base.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"emitDeclarationOnly": true,
+		"rootDir": "."
+	},
+	"include": ["."],
+	"exclude": ["node_modules", "dist"]
+}

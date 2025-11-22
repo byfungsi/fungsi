@@ -1,0 +1,30 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.7/schema.json",
+	"root": false,
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"experimentalScannerIgnores": ["node_modules", "dist", "build", ".turbo"]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": false,
+		"rules": {
+			"recommended": true,
+			"a11y": "warn",
+			"complexity": "warn",
+			"correctness": "warn",
+			"nursery": "off",
+			"performance": "warn",
+			"security": "warn",
+			"style": "off",
+			"suspicious": "warn"
+		}
+	}
+}

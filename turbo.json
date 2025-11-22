@@ -1,0 +1,41 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"tasks": {
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"run": {
+			"cache": false,
+			"persistent": true
+		},
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**"]
+		},
+		"lint": {
+			"cache": true,
+			"outputs": []
+		},
+		"infra:up": {
+			"cache": false,
+			"outputs": []
+		},
+		"infra:down": {
+			"cache": false,
+			"outputs": []
+		},
+		"infra:clean": {
+			"cache": false,
+			"outputs": []
+		},
+		"infra:logs": {
+			"cache": false,
+			"persistent": true
+		},
+		"infra:ps": {
+			"cache": false,
+			"outputs": []
+		}
+	}
+}

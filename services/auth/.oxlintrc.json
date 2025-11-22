@@ -1,0 +1,11 @@
+{
+	"extends": ["../../packages/oxlint-config/base.json"],
+	"overrides": [
+		{
+			"files": ["**/seeders/**", "**/seeder.ts"],
+			"rules": {
+				"no-await-in-loop": "off"
+			}
+		}
+	]
+}

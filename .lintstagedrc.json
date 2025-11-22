@@ -1,0 +1,7 @@
+{
+	"*.{js,ts,jsx,tsx}": [
+		"oxlint --max-warnings 0 --import-plugin",
+		"biome check --write --error-on-warnings"
+	],
+	"*.{json,md,yml,yaml}": ["biome format --write"]
+}
