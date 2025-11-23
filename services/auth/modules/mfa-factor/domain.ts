@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const MfaFactorIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -25,9 +28,18 @@ export class MfaFactor extends Schema.Class<MfaFactor>("MfaFactor")({
 	disabledAt: Schema.OptionFromNullishOr(Schema.DateTimeUtcFromDate, null),
 }) {}
 
-export const MfaFactorTableDB = Schema.encodedSchema(MfaFactor);
-export type MfaFactorTableDB = typeof MfaFactorTableDB.Type;
+/* Encoded */
 
-export const mfaFactorFromUnknown = Schema.decodeUnknown(MfaFactor);
-export const mfaFactorToDb = Schema.encode(MfaFactor);
-export const toMfaFactor = Schema.decode(MfaFactor);
+export const MfaFactorEncoded = Schema.encodedSchema(MfaFactor);
+export type MfaFactorEncoded = typeof MfaFactorEncoded.Type;
+
+/* Infra */
+
+export const MfaFactorInsertable = MfaFactorEncoded.pipe(
+	Schema.omit("addedAt"),
+);
+export type MfaFactorInsertable = typeof MfaFactorInsertable.Type;
+
+export interface MfaFactorTableDB extends MfaFactorInsertable {
+	addedAt: Generated<MfaFactorEncoded["addedAt"]>;
+}

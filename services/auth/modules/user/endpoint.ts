@@ -13,6 +13,6 @@ export const UsersApiGroup = HttpApiGroup.make("users")
 			"getUserByApplicationId",
 		)`/applications/${applicationIdParam}`
 			.addSuccess(UserArrayResponse)
-			.addError(UserServiceError),
+			.addError(UserServiceError, { status: 401 }),
 	)
 	.prefix("/users");

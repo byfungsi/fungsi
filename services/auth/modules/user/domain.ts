@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { ApplicationIDSchema } from "../application/domain";
+
+/* Pure Domain */
 
 const Email = Schema.String.pipe(Schema.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/));
 
@@ -26,12 +29,24 @@ export class User extends Schema.Class<User>("User")({
 	updatedAt: Schema.DateFromSelf,
 }) {}
 
-export const UserTableDB = Schema.encodedSchema(User);
-export type UserTableDB = typeof UserTableDB.Type;
+/* Encoded */
 
-export const userFromUnknown = Schema.decodeUnknown(User);
-export const userToDb = Schema.encode(User);
-export const toUser = Schema.decode(User);
+export const UserEncoded = Schema.encodedSchema(User);
+export type UserEncoded = typeof UserEncoded.Type;
+
+/* Infra */
+
+export const UserInsertable = UserEncoded.pipe(
+	Schema.omit("createdAt", "updatedAt"),
+);
+export type UserInsertable = typeof UserInsertable.Type;
+
+export interface UserTableDB extends UserInsertable {
+	createdAt: Generated<UserEncoded["createdAt"]>;
+	updatedAt: Generated<UserEncoded["updatedAt"]>;
+}
+
+/* DTO */
 
 export const UserArrayResponse = Schema.Array(
 	Schema.Struct(User.fields).omit("applicationId"),

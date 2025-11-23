@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const EmailVerificationTokenIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -26,14 +29,23 @@ export class EmailVerificationToken extends Schema.Class<EmailVerificationToken>
 	createdAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const EmailVerificationTokenTableDB = Schema.encodedSchema(
-	EmailVerificationToken,
-);
-export type EmailVerificationTokenTableDB =
-	typeof EmailVerificationTokenTableDB.Type;
+/* Encoded */
 
-export const emailVerificationTokenFromUnknown = Schema.decodeUnknown(
+export const EmailVerificationTokenEncoded = Schema.encodedSchema(
 	EmailVerificationToken,
 );
-export const emailVerificationTokenToDb = Schema.encode(EmailVerificationToken);
-export const toEmailVerificationToken = Schema.decode(EmailVerificationToken);
+export type EmailVerificationTokenEncoded =
+	typeof EmailVerificationTokenEncoded.Type;
+
+/* Infra */
+
+export const EmailVerificationTokenInsertable = EmailVerificationTokenEncoded.pipe(
+	Schema.omit("createdAt"),
+);
+export type EmailVerificationTokenInsertable =
+	typeof EmailVerificationTokenInsertable.Type;
+
+export interface EmailVerificationTokenTableDB
+	extends EmailVerificationTokenInsertable {
+	createdAt: Generated<EmailVerificationTokenEncoded["createdAt"]>;
+}

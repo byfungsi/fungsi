@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const SessionIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -43,9 +46,19 @@ export class Session extends Schema.Class<Session>("Session")({
 	updatedAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const SessionTableDB = Schema.encodedSchema(Session);
-export type SessionTableDB = typeof SessionTableDB.Type;
+/* Encoded */
 
-export const sessionFromUnknown = Schema.decodeUnknown(Session);
-export const sessionToDb = Schema.encode(Session);
-export const toSession = Schema.decode(Session);
+export const SessionEncoded = Schema.encodedSchema(Session);
+export type SessionEncoded = typeof SessionEncoded.Type;
+
+/* Infra */
+
+export const SessionInsertable = SessionEncoded.pipe(
+	Schema.omit("createdAt", "updatedAt"),
+);
+export type SessionInsertable = typeof SessionInsertable.Type;
+
+export interface SessionTableDB extends SessionInsertable {
+	createdAt: Generated<SessionEncoded["createdAt"]>;
+	updatedAt: Generated<SessionEncoded["updatedAt"]>;
+}

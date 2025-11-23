@@ -1,4 +1,7 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
+
+/* Pure Domain */
 
 export const ProviderIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -21,9 +24,19 @@ export class Provider extends Schema.Class<Provider>("Provider")({
 	updatedAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const ProviderTableDB = Schema.encodedSchema(Provider);
-export type ProviderTableDB = typeof ProviderTableDB.Type;
+/* Encoded */
 
-export const providerFromUnknown = Schema.decodeUnknown(Provider);
-export const providerToDb = Schema.encode(Provider);
-export const toProvider = Schema.decode(Provider);
+export const ProviderEncoded = Schema.encodedSchema(Provider);
+export type ProviderEncoded = typeof ProviderEncoded.Type;
+
+/* Infra */
+
+export const ProviderInsertable = ProviderEncoded.pipe(
+	Schema.omit("createdAt", "updatedAt"),
+);
+export type ProviderInsertable = typeof ProviderInsertable.Type;
+
+export interface ProviderTableDB extends ProviderInsertable {
+	createdAt: Generated<ProviderEncoded["createdAt"]>;
+	updatedAt: Generated<ProviderEncoded["updatedAt"]>;
+}

@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const PasswordResetTokenIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -26,11 +29,21 @@ export class PasswordResetToken extends Schema.Class<PasswordResetToken>(
 	createdAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const PasswordResetTokenTableDB =
-	Schema.encodedSchema(PasswordResetToken);
-export type PasswordResetTokenTableDB = typeof PasswordResetTokenTableDB.Type;
+/* Encoded */
 
-export const passwordResetTokenFromUnknown =
-	Schema.decodeUnknown(PasswordResetToken);
-export const passwordResetTokenToDb = Schema.encode(PasswordResetToken);
-export const toPasswordResetToken = Schema.decode(PasswordResetToken);
+export const PasswordResetTokenEncoded =
+	Schema.encodedSchema(PasswordResetToken);
+export type PasswordResetTokenEncoded = typeof PasswordResetTokenEncoded.Type;
+
+/* Infra */
+
+export const PasswordResetTokenInsertable = PasswordResetTokenEncoded.pipe(
+	Schema.omit("createdAt"),
+);
+export type PasswordResetTokenInsertable =
+	typeof PasswordResetTokenInsertable.Type;
+
+export interface PasswordResetTokenTableDB
+	extends PasswordResetTokenInsertable {
+	createdAt: Generated<PasswordResetTokenEncoded["createdAt"]>;
+}

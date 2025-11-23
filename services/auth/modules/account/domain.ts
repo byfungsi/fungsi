@@ -1,6 +1,9 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { ProviderIDSchema } from "../provider/domain";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const AccountIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -37,9 +40,19 @@ export class Account extends Schema.Class<Account>("Account")({
 	updatedAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const AccountTableDB = Schema.encodedSchema(Account);
-export type AccountTableDB = typeof AccountTableDB.Type;
+/* Encoded */
 
-export const accountFromUnknown = Schema.decodeUnknown(Account);
-export const accountToDb = Schema.encode(Account);
-export const toAccount = Schema.decode(Account);
+export const AccountEncoded = Schema.encodedSchema(Account);
+export type AccountEncoded = typeof AccountEncoded.Type;
+
+/* Infra */
+
+export const AccountInsertable = AccountEncoded.pipe(
+	Schema.omit("createdAt", "updatedAt"),
+);
+export type AccountInsertable = typeof AccountInsertable.Type;
+
+export interface AccountTableDB extends AccountInsertable {
+	createdAt: Generated<AccountEncoded["createdAt"]>;
+	updatedAt: Generated<AccountEncoded["updatedAt"]>;
+}

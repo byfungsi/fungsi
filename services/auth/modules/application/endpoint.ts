@@ -1,14 +1,13 @@
-import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from "@effect/platform";
-import { ApplicationIDSchema } from "../application/domain";
+import { HttpApiEndpoint, HttpApiGroup } from "@effect/platform";
+import { SuccessSchema } from "../common/success";
+import { CreateApplicationDTO } from "./domain";
+import { ApplicationServiceError } from "./service";
 
-const applicationIdParam = HttpApiSchema.param(
-	"applicationId",
-	ApplicationIDSchema,
-);
-export const AdminApplicationApiGroup = HttpApiGroup.make("users")
+export const AdminApplicationApiGroup = HttpApiGroup.make("applicationAdmin")
 	.add(
-		HttpApiEndpoint.get(
-			"getUserByApplicationId",
-		)`/applications/${applicationIdParam}`,
+		HttpApiEndpoint.post("createApplication")`/`
+			.setPayload(CreateApplicationDTO)
+			.addSuccess(SuccessSchema, { status: 201 })
+			.addError(ApplicationServiceError),
 	)
-	.prefix("/users");
+	.prefix("/admin/applications");

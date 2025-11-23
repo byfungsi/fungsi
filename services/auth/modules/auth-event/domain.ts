@@ -1,6 +1,9 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { SessionIDSchema } from "../session/domain";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export const AuthEventIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
@@ -26,9 +29,18 @@ export class AuthEvent extends Schema.Class<AuthEvent>("AuthEvent")({
 	createdAt: Schema.DateTimeUtcFromDate,
 }) {}
 
-export const AuthEventTableDB = Schema.encodedSchema(AuthEvent);
-export type AuthEventTableDB = typeof AuthEventTableDB.Type;
+/* Encoded */
 
-export const authEventFromUnknown = Schema.decodeUnknown(AuthEvent);
-export const authEventToDb = Schema.encode(AuthEvent);
-export const toAuthEvent = Schema.decode(AuthEvent);
+export const AuthEventEncoded = Schema.encodedSchema(AuthEvent);
+export type AuthEventEncoded = typeof AuthEventEncoded.Type;
+
+/* Infra */
+
+export const AuthEventInsertable = AuthEventEncoded.pipe(
+	Schema.omit("createdAt"),
+);
+export type AuthEventInsertable = typeof AuthEventInsertable.Type;
+
+export interface AuthEventTableDB extends AuthEventInsertable {
+	createdAt: Generated<AuthEventEncoded["createdAt"]>;
+}

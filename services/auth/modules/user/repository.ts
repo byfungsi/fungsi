@@ -8,7 +8,6 @@ export class UserRepository extends Effect.Service<UserRepository>()(
 	{
 		effect: Effect.gen(function* () {
 			const db = yield* DatabaseService;
-
 			const getUserByApplicationId = Effect.fn("getUserByApplicationId")(
 				function* (applicationId: string) {
 					{
@@ -24,8 +23,6 @@ export class UserRepository extends Effect.Service<UserRepository>()(
 								"emailVerifiedAt",
 							])
 							.where("users.applicationId", "=", AppId);
-
-						yield* Effect.log(users);
 
 						const userResponse =
 							yield* Schema.decodeUnknown(UserArrayResponse)(users);

@@ -1,5 +1,7 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 
+/* Pure Domain */
 export const ApplicationIDSchema = Schema.String.pipe(
 	Schema.filter((s) => {
 		if (!s.startsWith("app-")) {
@@ -24,10 +26,23 @@ export class Application extends Schema.Class<Application>("Application")({
 	updatedAt: Schema.DateFromSelf,
 }) {}
 
-export const ApplicationTableDB = Schema.encodedSchema(Application);
+/* Encoded */
+export const ApplicationEncoded = Schema.encodedSchema(Application);
+export type ApplicationEncoded = typeof ApplicationEncoded.Type;
 
-export const applicationFromUnknown = Schema.decodeUnknown(Application);
-export const applicationToDb = Schema.encode(Application);
-export const toApplication = Schema.decode(Application);
+/* Infra */
+export const ApplicationInsertable = ApplicationEncoded.pipe(
+	Schema.omit("createdAt", "updatedAt"),
+);
+export type ApplicationInsertable = typeof ApplicationInsertable.Type;
 
-export type ApplicationTableDB = typeof ApplicationTableDB.Type;
+export interface ApplicationTableDB extends ApplicationInsertable {
+	createdAt: Generated<ApplicationEncoded["createdAt"]>;
+	updatedAt: Generated<ApplicationEncoded["updatedAt"]>;
+}
+
+/* DTO */
+export const CreateApplicationDTO = Application.pipe(
+	Schema.omit("id", "createdAt", "updatedAt"),
+);
+export type CreateApplicationDTO = typeof CreateApplicationDTO.Type;

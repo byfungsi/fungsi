@@ -1,5 +1,8 @@
 import { Schema } from "effect";
+import { Generated } from "kysely";
 import { UserIDSchema } from "../user/domain";
+
+/* Pure Domain */
 
 export class PasswordCredential extends Schema.Class<PasswordCredential>(
 	"PasswordCredential",
@@ -12,11 +15,23 @@ export class PasswordCredential extends Schema.Class<PasswordCredential>(
 	lockedUntil: Schema.OptionFromNullishOr(Schema.DateTimeUtcFromDate, null),
 }) {}
 
-export const PasswordCredentialTableDB =
-	Schema.encodedSchema(PasswordCredential);
-export type PasswordCredentialTableDB = typeof PasswordCredentialTableDB.Type;
+/* Encoded */
 
-export const passwordCredentialFromUnknown =
-	Schema.decodeUnknown(PasswordCredential);
-export const passwordCredentialToDb = Schema.encode(PasswordCredential);
-export const toPasswordCredential = Schema.decode(PasswordCredential);
+export const PasswordCredentialEncoded =
+	Schema.encodedSchema(PasswordCredential);
+export type PasswordCredentialEncoded = typeof PasswordCredentialEncoded.Type;
+
+/* Infra */
+
+export const PasswordCredentialInsertable = PasswordCredentialEncoded.pipe(
+	Schema.omit("algo", "lastChangedAt", "failedAttempts"),
+);
+export type PasswordCredentialInsertable =
+	typeof PasswordCredentialInsertable.Type;
+
+export interface PasswordCredentialTableDB
+	extends PasswordCredentialInsertable {
+	algo: Generated<PasswordCredentialEncoded["algo"]>;
+	lastChangedAt: Generated<PasswordCredentialEncoded["lastChangedAt"]>;
+	failedAttempts: Generated<PasswordCredentialEncoded["failedAttempts"]>;
+}

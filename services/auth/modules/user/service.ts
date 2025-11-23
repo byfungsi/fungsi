@@ -13,15 +13,17 @@ export class UserService extends Effect.Service<UserService>()(
 	{
 		effect: Effect.gen(function* () {
 			const ur = yield* UserRepository;
-			const getUserByApplicationId = (applicationId: string) => {
-				return ur
-					.getUserByApplicationId(applicationId)
-					.pipe(
-						Effect.catchAll((error) =>
-							Effect.fail(new UserServiceError({ cause: error })),
-						),
+			const getUserByApplicationId = Effect.fn(
+				"module/user/service/getUserByApplicationId",
+			)(
+				function* (applicationId: string) {
+					return yield* Effect.fail(
+						new UserServiceError({ cause: "hei kamu" }),
 					);
-			};
+					return yield* ur.getUserByApplicationId(applicationId);
+				},
+				Effect.mapError((cause) => new UserServiceError({ cause })),
+			);
 			return { getUserByApplicationId };
 		}),
 		dependencies: [UserRepository.Default],
