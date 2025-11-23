@@ -17,7 +17,6 @@ export class UserService extends Effect.Service<UserService>()(
 				"module/user/service/getUserByApplicationId",
 			)(
 				function* (applicationId: string) {
-					return yield* Effect.fail();
 					return yield* ur.getUserByApplicationId(applicationId);
 				},
 				Effect.mapError((cause) => new UserServiceError({ cause })),
